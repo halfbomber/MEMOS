@@ -1,0 +1,44 @@
+@Author: BAGOUET Alexandre <alex>
+@Date:   23-07-2019
+@Last modified by:   alex
+@Last modified time: 23-07-2019
+@License: FREE
+@Copyright: Alexandre Bagouet
+
+
+
+1/ création d'une arboressence des informations des hosts pour connettre celle disponible
+  ansible  all --user root -m setup --tree /tmp/facts [> srv.bagouet.fr_facts.hr]
+
+2/ utiliser les informations recoltées dans un playbook
+  - name : pull facts from host
+    setup:
+      filter: * or ansible_eth0.ipv4.address
+
+  var = hostvars['asdf.example.com']['ansible_facts']['os_family']
+
+  2.1/ pour un template jinja2
+    {{ ansible_facts.eth0.ipv4.address }}
+3/ priorité de lecture des emplacements des hostvars (du plus au moins prioritaire)
+    0 extra vars
+    1 include params
+    2 role (and include_role) params
+    3 set_facts / registered vars
+    4 include_vars
+    5 task vars
+    6 block vars (only for tasks in block)
+    7 role vars (defined in role/vars/main.yml)
+    8 play vars_files
+    9 play vars_prompt
+    10 play vars
+    11 host facts / cached set_facts
+    12 playbook host_vars/*
+    13 inventory host_vars/*
+    14 inventory file or script host vars
+    15 playbook group_vars/*
+    16 inventory group_vars/*
+    17 playbook group_vars/all
+    18 inventory group_vars/all
+    19 inventory file or script group vars
+    20 role defaults
+    21 command line values (eg “-u user”)
